@@ -41,7 +41,7 @@ public class Estacionamento {
             if (minutos <= 60) {
                 valor = VALOR_HORA;
             } else {
-                long horas = minutos / 60;
+                long horas = (long) Math.ceil(minutos / 60.0);
                 valor = VALOR_HORA + (horas - 1) * VALOR_HORA_EXTRA;
             }
         }
@@ -53,7 +53,7 @@ public class Estacionamento {
         return valor;
     }
 
-    private void validarHorarios(LocalDateTime entrada, LocalDateTime saida) {
+    public void validarHorarios(LocalDateTime entrada, LocalDateTime saida) {
         LocalTime horarioEntrada = entrada.toLocalTime();
         LocalTime horarioSaida = saida.toLocalTime();
 
@@ -70,5 +70,9 @@ public class Estacionamento {
         if (!mesmaData && horarioSaida.isBefore(horaAbertura) && horarioSaida.isAfter(horaFechamento)) {
             throw new IllegalArgumentException("Saida não é permitida entre 02:00 e 07:59.");
         }
+        if (saida.isBefore(entrada)) {
+            throw new IllegalArgumentException("A saída não pode ser antes da entrada");
+        }
+
     }
 }
