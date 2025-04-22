@@ -135,7 +135,6 @@ public class EstacionamentoTest {
         ));
     }
 
-    // Os testes parametrizados, sla se é isso mesmo, pesquisei no YouTube e vi esse jeito de fazer, ai deu erro e pedi pro GPT arrumar e ficou assim.
     // teste parametrizado dos valores
     @ParameterizedTest
     @CsvSource({
@@ -173,6 +172,4 @@ public class EstacionamentoTest {
 
         assertThrows(IllegalArgumentException.class, () -> estacionamento.calcularValor(entradaDate, saidaDate, cliente));
     }
-
-
 }

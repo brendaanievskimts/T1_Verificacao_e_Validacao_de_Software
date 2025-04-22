@@ -17,8 +17,6 @@ public class Estacionamento {
     private final double VALOR_HORA = 9;
     private final double VALOR_HORA_EXTRA = 5.55;
 
-    private Cliente cliente; //não sei se é melhor usar esse no metodo ao inves de passar o cliente por parametro
-
     public double calcularValor(LocalDateTime entrada, LocalDateTime saida, Cliente cliente){
         validarHorarios(entrada,saida);
 
@@ -73,6 +71,5 @@ public class Estacionamento {
         if (saida.isBefore(entrada)) {
             throw new IllegalArgumentException("A saída não pode ser antes da entrada");
         }
-
     }
 }
