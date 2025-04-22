@@ -1,5 +1,7 @@
 package com.data;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Estacionamento {
@@ -13,8 +15,60 @@ public class Estacionamento {
     private final int CORTESIA = 20;
     private final double PERNOITE = 50;
     private final double VALOR_HORA = 9;
+    private final double VALOR_HORA_EXTRA = 5.55;
 
-    private Cliente cliente;
+    private Cliente cliente; //não sei se é melhor usar esse no metodo ao inves de passar o cliente por parametro
 
-    //implementar metodos
+    public double calcularValor(LocalDateTime entrada, LocalDateTime saida, Cliente cliente){
+        validarHorarios(entrada,saida);
+
+        long minutos = Duration.between(entrada, saida).toMinutes();
+
+        if (minutos <= CORTESIA) {
+            return 0.0;
+        }
+
+        boolean isPernoite = saida.toLocalDate().isAfter(entrada.toLocalDate()) &&
+                saida.toLocalTime().isAfter(horaEntrada);
+
+        double valor;
+
+        if (isPernoite) {
+            long dias = Duration.between(entrada.toLocalDate().atTime(horaEntrada), saida).toDays();
+            dias = Math.max(dias, 1);
+            valor = dias * PERNOITE;
+        } else {
+            if (minutos <= 60) {
+                valor = VALOR_HORA;
+            } else {
+                long horas = minutos / 60;
+                valor = VALOR_HORA + (horas - 1) * VALOR_HORA_EXTRA;
+            }
+        }
+
+        if (cliente == Cliente.VIP) {
+            valor *= 0.5;
+        }
+
+        return valor;
+    }
+
+    private void validarHorarios(LocalDateTime entrada, LocalDateTime saida) {
+        LocalTime horarioEntrada = entrada.toLocalTime();
+        LocalTime horarioSaida = saida.toLocalTime();
+
+        if (horarioEntrada.isBefore(horaAbertura) || horarioEntrada.isAfter(horaMaxSaida)) {
+            throw new IllegalArgumentException("Entrada só é permitida entre 08:00 e 23:59");
+        }
+
+        boolean mesmaData = entrada.toLocalDate().equals(saida.toLocalDate());
+
+        if (mesmaData && horarioSaida.isBefore(horaAbertura)) {
+            throw new IllegalArgumentException("Saida não é permitida entre 02:00 e 07:59.");
+        }
+
+        if (!mesmaData && horarioSaida.isBefore(horaAbertura) && horarioSaida.isAfter(horaFechamento)) {
+            throw new IllegalArgumentException("Saida não é permitida entre 02:00 e 07:59.");
+        }
+    }
 }
